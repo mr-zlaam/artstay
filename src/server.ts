@@ -1,7 +1,3 @@
-import express, { type Application } from "express";
+import { connectDB } from "./database/database.js";
 
-const app: Application = express();
-app.get("/", (_, res) => {
-  res.status(200).json({ success: true, message: "Everything working fine" });
-});
-app.listen(8000, () => console.log(`Server is running on port 3000`));
+await connectDB();
