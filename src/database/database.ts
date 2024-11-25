@@ -18,4 +18,3 @@ const connectDB = async (): Promise<void> => {
     }));
 };
 export { connectDB, db };
-

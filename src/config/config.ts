@@ -7,4 +7,3 @@ const config = {
   ENV: process.env.NODE_ENV as TENV
 };
 export const { PORT, ENV } = config;
-
