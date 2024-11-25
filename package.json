@@ -16,7 +16,7 @@
     "server": "node --env-file .env --watch ./dist/server.js",
     "dev": "tsc --build && concurrently  \"pnpm run watch\"  \"pnpm run server\"",
     "commit-lint": "commitlint  --edit",
-    "precommit": "concurrently \"pnpm run lint\" \"pnpm run type-check\" \"pnpm run fmt\" \"git add .\"",
+    "precommit": "concurrently \"pnpm run lint\" \"pnpm run type-check && pnpm run fmt && git add .\"",
     "prepare": "husky",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
