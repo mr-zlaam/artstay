@@ -7,6 +7,7 @@ export default {
       2,
       "always",
       [
+        "init", // project initialization
         "feat", // new feature
         "fix", // bug fix
         "docs", // documentation only changes
@@ -15,7 +16,8 @@ export default {
         "perf", // performance improvements
         "test", // adding missing tests
         "chore", // updating build tasks, package manager configs, etc
-        "revert" // reverting a previous commit
+        "revert", // reverting a previous commit
+        "build" // dependency related changes
       ]
     ],
     "header-max-length": [2, "always", 100],
