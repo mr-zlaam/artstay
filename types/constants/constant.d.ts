@@ -15,3 +15,4 @@ export declare const SUCCESSCODE: number,
   FORBIDDENCODE: number,
   NOTFOUNDCODE: number,
   INTERNALSERVERERRORCODE: number;
+export declare const DEFAULTENDPOINT: string;

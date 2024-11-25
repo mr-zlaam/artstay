@@ -11,7 +11,7 @@
     "fmt": "prettier --write .",
     "prebuild": "rimraf -rf ./dist  && pnpm lint  && pnpm type-check && pnpm fmt",
     "build": "pnpm tsc --build",
-    "dev": "pnpm build  && bun --watch ./src/server.ts",
+    "dev": "pnpm build  && concurrently  \"bun --watch ./src/server.ts\" \"tsc -w\"",
     "start": "pnpm build && node --env-file .env ./dist/server.js",
     "commit-lint": "commitlint  --edit",
     "precommit": "concurrently \"pnpm run lint\" \"pnpm run type-check && pnpm run fmt && git add .\"",
