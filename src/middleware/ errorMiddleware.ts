@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { ENV } from "../config/config.js";
+import { ENV } from "../configs/config.js";
 interface CustomError extends Error {
   success?: boolean;
   status?: number;

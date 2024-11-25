@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { ENV } from "../config/config.js";
+import { ENV } from "../configs/config.js";
 import { type THTTPRESPONSE } from "../types/types.js";
 const jsonResponse = (
   status: number,

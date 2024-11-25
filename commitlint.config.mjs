@@ -17,7 +17,8 @@ export default {
         "test", // adding missing tests
         "chore", // updating build tasks, package manager configs, etc
         "revert", // reverting a previous commit
-        "build" // dependency related changes
+        "build", // dependency related changes
+        "update" // update the code which is not necessary
       ]
     ],
     "header-max-length": [2, "always", 100],

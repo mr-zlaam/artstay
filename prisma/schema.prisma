@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -10,4 +11,10 @@ datasource db {
 model User {
   id   String @id @default(cuid())
   name String
+}
+
+model RateLimiterFlexible {
+  key    String    @id @default(cuid())
+  points Int
+  expire DateTime?
 }

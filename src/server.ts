@@ -1,3 +1,3 @@
-import { connectDB } from "./database/database.js";
+import { connectDB } from "./databases/database.js";
 
 await connectDB();

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { app } from "../app.js";
-import { PORT } from "../config/config.js";
+import { PORT } from "../configs/config.js";
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 const db = new PrismaClient({});

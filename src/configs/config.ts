@@ -3,7 +3,8 @@ import DotenvFlow from "dotenv-flow";
 type TENV = "development" | "production" | "test";
 DotenvFlow.config();
 const config = {
-  PORT: process.env.PORT || 3000,
-  ENV: process.env.NODE_ENV as TENV
+  PORT: process.env.PORT || 8001,
+  ENV: process.env.NODE_ENV as TENV,
+  JWT_SECRET: process.env.JWT_SECRET as string
 };
-export const { PORT, ENV } = config;
+export const { PORT, ENV, JWT_SECRET } = config;
