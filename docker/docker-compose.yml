@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  app:
+    image: artstay:test # TODO: change to artstay:latest
+    container_name: artstay
+    ports:
+      - "8000:8000"
+    environment:
+      NODE_ENV: production
+      PORT: YOUR_PORT
+      DATABASE_URL: YOUR_DATABASE_URL
+      SECRET_KEY: YOUR_SECRET_KEY
+    volumes:
+      - ./app:/usr/src/app
+    restart: always

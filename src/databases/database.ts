@@ -4,6 +4,7 @@ import { PORT } from "../configs/config.js";
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 const db = new PrismaClient({});
+
 const connectDB = async (): Promise<void> => {
   void (await db
     .$connect()

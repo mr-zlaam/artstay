@@ -1,0 +1,29 @@
+FROM node:22.11
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml ./ 
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Install dependencies in a CI-friendly way
+RUN pnpm install --frozen-lockfile --prod --ignore-scripts
+
+# Copy the rest of the application code
+COPY . .
+# install prisma
+RUN pnpm add prisma
+# Generate Prisma client
+
+RUN pnpm db:generate
+# Push database schema
+RUN pnpm db:push
+
+# Expose the application's port
+EXPOSE 8000
+
+# Start the application
+CMD [ "node", "dist/server.js" ]
