@@ -4,17 +4,117 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id   String @id @default(cuid())
-  name String
-}
-
+// Rate limiting
 model RateLimiterFlexible {
   key    String    @id @default(cuid())
   points Int
   expire DateTime?
+}
+
+enum MAIN_ROLE {
+  SUPERADMIN
+  ADMIN
+  MODERATOR
+  CUSTOMER
+  VENDOR
+}
+
+model User {
+  userID          String           @id @default(cuid())
+  username        String           @unique
+  fullName        String
+  email           String           @unique
+  address         String?
+  password        String?
+  role            MAIN_ROLE        @default(CUSTOMER)
+  avatar          String?
+  OTP             String?          @unique
+  artisan         Artisan?
+  travelAgent     TravelAgent?
+  eventOrganizer  EventOrganizers?
+  translator      Translators?
+  OTP_EXPIRES_IN  DateTime?
+  isEmailVerified Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  trashedBy       String?
+  trashedAt       DateTime?
+
+  @@index([userID])
+  @@index([username])
+  @@index([fullName])
+  @@index([isEmailVerified])
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Artisan {
+  user          User     @relation(fields: [foreignUserID], references: [userID])
+  foreignUserID String   @unique
+  artisanID     Int      @id @default(autoincrement())
+  region        String[]
+  services      String[] @default([])
+  phone         String   @unique
+  expertise     String[] @default([])
+  hourlyRate    Float
+  availability  Boolean  @default(true)
+  userUserID    String
+
+  @@index([phone])
+  @@index([artisanID])
+  @@index([region])
+  @@index([expertise])
+  @@index([availability])
+  @@index([hourlyRate])
+  @@map("artisans")
+}
+
+model TravelAgent {
+  TravelAgentID Int      @id @default(autoincrement())
+  user          User     @relation(fields: [foreignUserID], references: [userID])
+  foreignUserID String   @unique
+  services      String[] @default([])
+  phone         String   @unique
+  hourlyRate    Float
+  region        String[]
+  packages      Json[]
+}
+
+model EventOrganizers {
+  organizationID      Int      @id @default(autoincrement())
+  organizationName    String   @unique
+  organizationEmail   String   @unique
+  organizationPhone   String   @unique
+  organizationAddress String?
+  reviews             Json[]   @default([])
+  specialization      String[]
+  createdAt           DateTime @default(now())
+  user                User     @relation(fields: [foreignUserID], references: [userID])
+  foreignUserID       String   @unique
+
+  @@index([organizationName])
+  @@index([organizationEmail])
+  @@index([organizationPhone])
+  @@index([organizationAddress])
+  @@map("eventOrganizers")
+}
+
+model Translators {
+  user          User     @relation(fields: [foreignUserID], references: [userID])
+  foreignUserID String   @unique
+  translatorID  Int      @id @default(autoincrement())
+  phone         String   @unique
+  hourlyRate    Float
+  availability  Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  @@index([phone])
+  @@index([translatorID])
+  @@index([availability])
+  @@index([hourlyRate])
+  @@map("translators")
 }
