@@ -1,0 +1,3 @@
+*
+!.gitignore
+# !PRODUCTION.log   TODO: Uncomment this in production
