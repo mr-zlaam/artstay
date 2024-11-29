@@ -12,7 +12,7 @@ export const colorizeLevel = (level: string) => {
 
 const devFileTransport = new winston.transports.DailyRotateFile({
   filename: "logs/development-%DATE%.log",
-  datePattern: "YYYY/MM/DD",
+  datePattern: "YYYY-MM-DD",
   zippedArchive: true,
   maxSize: "20m",
   maxFiles: "14d"
@@ -20,7 +20,7 @@ const devFileTransport = new winston.transports.DailyRotateFile({
 
 const prodFileTransport = new winston.transports.DailyRotateFile({
   filename: "logs/production-%DATE%.log",
-  datePattern: "YYYY/MM/DD",
+  datePattern: "YYYY-MM-DD",
   zippedArchive: true,
   maxSize: "20m",
   maxFiles: "14d"
