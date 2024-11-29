@@ -1,8 +1,8 @@
-import { INTERNALSERVERERRORMSG, SUCCESSCODE, SUCCESSMSG } from "../../constants/constant.js";
 import { httpResponse } from "../../utils/apiResponseUtils.js";
 import QuickerUtils from "../../utils/quickerUtils.js";
 import type { Request, Response } from "express";
-class PerformanceController {
+import { INTERNALSERVERERRORMSG, SUCCESSCODE, SUCCESSMSG } from "../../constants/constant.js";
+export default class PerformanceController {
   static getPerformance = (req: Request, res: Response) => {
     try {
       const healthData = {
@@ -20,5 +20,3 @@ class PerformanceController {
     }
   };
 }
-
-export default PerformanceController;

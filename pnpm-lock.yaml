@@ -31,6 +31,9 @@ importers:
       helmet:
         specifier: ^8.0.0
         version: 8.0.0
+      http-status:
+        specifier: ^2.0.0
+        version: 2.0.0
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -77,6 +80,9 @@ importers:
       "@types/express":
         specifier: ^5.0.0
         version: 5.0.0
+      "@types/http-status":
+        specifier: ^1.1.2
+        version: 1.1.2
       "@types/jsonwebtoken":
         specifier: ^9.0.7
         version: 9.0.7
@@ -326,6 +332,10 @@ packages:
 
   "@types/http-errors@2.0.4":
     resolution: { integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA== }
+
+  "@types/http-status@1.1.2":
+    resolution: { integrity: sha512-GodZPvF3xPVglUx4q7s0plKu1cdW0mMLADpWi5PMMx3n/2xGB6GoKqQxQxp6A5xuARtZpQ9/6p3WDFwCpPaN8A== }
+    deprecated: This is a stub types definition. http-status provides its own type definitions, so you do not need this installed.
 
   "@types/json-schema@7.0.15":
     resolution: { integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA== }
@@ -1020,6 +1030,10 @@ packages:
   http-errors@2.0.0:
     resolution: { integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ== }
     engines: { node: ">= 0.8" }
+
+  http-status@2.0.0:
+    resolution: { integrity: sha512-fmtDiMjseYigum9OwVYJD2RD6tRYV4tzRrT92/aLSOS2bNPvz3jx8aHFqJ4Nq4ZLydalwuyh2Q6VuHg7qbCbJQ== }
+    engines: { node: ">= 0.4.0" }
 
   https-proxy-agent@5.0.1:
     resolution: { integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA== }
@@ -2212,6 +2226,10 @@ snapshots:
 
   "@types/http-errors@2.0.4": {}
 
+  "@types/http-status@1.1.2":
+    dependencies:
+      http-status: 2.0.0
+
   "@types/json-schema@7.0.15": {}
 
   "@types/jsonwebtoken@9.0.7":
@@ -2992,6 +3010,8 @@ snapshots:
       setprototypeof: 1.2.0
       statuses: 2.0.1
       toidentifier: 1.0.1
+
+  http-status@2.0.0: {}
 
   https-proxy-agent@5.0.1:
     dependencies:

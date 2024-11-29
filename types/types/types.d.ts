@@ -1,4 +1,4 @@
-export type THTTPRESPONSE = {
+export interface IHTTPRESPONSE {
   success: boolean;
   status: number;
   message: string;
@@ -8,4 +8,10 @@ export type THTTPRESPONSE = {
     url: string | null;
     method: string | null;
   };
-};
+}
+export interface IREGISTER {
+  username: string;
+  fullName: string;
+  email: string;
+  password: string;
+}

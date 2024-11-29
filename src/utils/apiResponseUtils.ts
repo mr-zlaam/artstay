@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { ENV } from "../configs/config.js";
-import { type THTTPRESPONSE } from "../types/types.js";
+import { type IHTTPRESPONSE } from "../types/types.js";
 const jsonResponse = (
   status: number,
   message: string = "OK",
@@ -18,7 +18,7 @@ const jsonResponse = (
   };
 };
 const httpResponse = (req: Request, res: Response, statusCode: number, message: string, data: unknown = null): Response => {
-  const response: THTTPRESPONSE = {
+  const response: IHTTPRESPONSE = {
     success: statusCode < 400,
     status: statusCode,
     message,
