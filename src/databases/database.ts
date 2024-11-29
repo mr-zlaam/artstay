@@ -12,11 +12,12 @@ const connectDB = async (): Promise<void> => {
     .then(() =>
       app.listen(PORT, () => {
         logger.info(`Connected to the database successfully ✅
-        Server is running on port http://localhost:${PORT} 🚀`);
+  SERVER:: Server is running on port http://localhost:${PORT} 🚀`);
       })
     )
-    .catch((err) => {
-      console.log("Error connecting to DB", err);
+    .catch((err: unknown) => {
+      if (err instanceof Error) logger.error(`Database connection error: ${err.message}`);
+      else logger.error("Error connecting to DB", { err });
       return process.exit(1);
     }));
 };
