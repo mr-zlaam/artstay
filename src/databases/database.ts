@@ -13,7 +13,6 @@ const connectDB = async (): Promise<void> => {
       app.listen(PORT, () => {
         logger.info(`Connected to the database successfully ✅
         Server is running on port http://localhost:${PORT} 🚀`);
-        //logger.info(`Server is running on port http://localhost:${PORT}`);
       })
     )
     .catch((err) => {
