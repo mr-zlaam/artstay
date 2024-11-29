@@ -3,8 +3,8 @@ import type { NextFunction, Request, Response } from "express";
 import { db } from "../databases/database.js";
 import { httpResponse } from "../utils/apiResponseUtils.js";
 import { ENV } from "../configs/config.js";
-import { ERRMSG, INTERNALSERVERERRORCODE, TOOMANYREQUESTSCODE, TOOMANYREQUESTSMSG } from "../constants/constant.js";
 import getMinutes from "../utils/getMinutesUtils.js";
+import reshttp from "reshttp";
 
 type ErrorLimiter = {
   remainingPoints: number;
@@ -38,9 +38,9 @@ export class RateLimiterMiddleware {
       if (error?.remainingPoints === 0) {
         const remainingSeconds = Math.ceil(error.msBeforeNext / 1000); // Convert ms to seconds
         const remainingDuration = getMinutes(remainingSeconds);
-        httpResponse(req, res, TOOMANYREQUESTSCODE, message || `${TOOMANYREQUESTSMSG} ${remainingDuration}`, null).end();
+        httpResponse(req, res, reshttp.tooManyRequestsCode, message || `${reshttp.tooManyRequestsMessage} ${remainingDuration}`, null).end();
       } else {
-        httpResponse(req, res, INTERNALSERVERERRORCODE, `${ERRMSG} in rateLimiter middleware: ${err as string}`, null);
+        httpResponse(req, res, reshttp.internalServerErrorCode, `something went wrong in rateLimiter middleware: ${err as string}`, null);
       }
     }
   }

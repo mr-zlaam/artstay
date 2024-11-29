@@ -18,7 +18,8 @@ export default {
         "chore", // updating build tasks, package manager configs, etc
         "revert", // reverting a previous commit
         "build", // dependency related changes
-        "update" // update the code which is not necessary
+        "update", // update the code which is not necessary
+        "package" //  add packages
       ]
     ],
     "header-max-length": [2, "always", 100],

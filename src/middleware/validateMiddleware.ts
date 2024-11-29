@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
+import reshttp from "reshttp";
 import { type z, ZodError } from "zod";
-import { BADREQUESTCODE, INTERNALSERVERERRORCODE, INTERNALSERVERERRORMSG } from "../constants/constant.js";
 
 export function validateDataMiddleware(schema: z.AnyZodObject) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -12,17 +12,17 @@ export function validateDataMiddleware(schema: z.AnyZodObject) {
         const errorMessages = error.errors.map((issue: issueParamType) => ({
           message: `${issue.message}`
         }));
-        res.status(BADREQUESTCODE).json({
+        res.status(reshttp.badRequestCode).json({
           success: false,
-          status: BADREQUESTCODE,
-          error: "Invalid data",
+          status: reshttp.badRequestCode,
+          error: "Data is not passing the validation standard",
           details: errorMessages
         });
       } else {
-        res.status(INTERNALSERVERERRORCODE).json({
+        res.status(reshttp.internalServerErrorCode).json({
           success: false,
-          status: INTERNALSERVERERRORCODE,
-          error: INTERNALSERVERERRORMSG
+          status: reshttp.internalServerErrorCode,
+          error: reshttp.internalServerErrorMessage
         });
       }
     }
