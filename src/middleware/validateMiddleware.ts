@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import reshttp from "reshttp";
 import { type z, ZodError } from "zod";
 
-export function validateDataMiddleware(schema: z.AnyZodObject) {
+export function validate(schema: z.AnyZodObject) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       schema.parse(req.body);
