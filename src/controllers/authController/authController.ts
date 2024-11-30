@@ -1,18 +1,21 @@
 import { db } from "../../databases/database.js";
-import type { IREGISTER } from "../../types/types.js";
+import type { IREGISTER, IVERIFY } from "../../types/types.js";
 import reshttp from "reshttp";
 import { httpResponse } from "../../utils/apiResponseUtils.js";
 import { asyncHandler } from "../../utils/asyncHandlerUtils.js";
-import { passwordHasher } from "../../utils/passwordHasherUtils.js";
+import { passwordHasher, verifyPassword } from "../../utils/passwordHasherUtils.js";
 import constant from "../../constants/constant.js";
 import { gloabalEmailMessage } from "../../services/globalEmailMessageService.js";
 import { generateOtp } from "../../utils/slugStringGeneratorUtils.js";
 import { messageSender } from "../../utils/messageSenderUtils.js";
 import { filterAdmin } from "../../utils/FilterAdminUtils.js";
+import tokenGeneratorUtils from "../../utils/tokenGeneratorUtils.js";
+import { payloadGenerator } from "../../utils/payLoadGeneratorUtils.js";
 export default class AuthController {
+  // Register a new user and white list the verification part if user is  superadmin
   static register = asyncHandler(async (req, res) => {
     const body = req.body as IREGISTER;
-    // validation is already handled by  middleware
+    // ** validation is already handled by  middleware
     const user = await db.user.findFirst({ where: { username: body.username, email: body.email } });
     if (user) return httpResponse(req, res, reshttp.conflictCode, reshttp.conflictMessage);
     const OTPCODE = generateOtp(8);
@@ -44,5 +47,30 @@ export default class AuthController {
       email: body.email,
       optionalMessage: filterAdmin(body.email) ? "Super Admin Registered Successfully" : "Please verify your account with OTP sent to your email."
     });
+  });
+  // ** Verify User Account through OTP
+  static verifyAccount = asyncHandler(async (req, res) => {
+    const { OTP } = req.body as IVERIFY;
+    if (!OTP) throw { status: reshttp.badRequestCode, message: reshttp.badRequestMessage };
+    const user = await db.user.findUnique({ where: { OTP } });
+    if (!user) throw { status: reshttp.notFoundCode, message: reshttp.notFoundMessage };
+    if (user.OTP === null) throw { status: reshttp.conflictCode, message: reshttp.conflictMessage };
+    const verifyCredentials = await verifyPassword(OTP, user.OTP, res);
+    if (!verifyCredentials) throw { status: reshttp.unauthorizedCode, message: reshttp.unauthorizedMessage };
+    await db.user.update({
+      where: { email: user.email },
+      data: { isEmailVerified: true, OTP: null, OTP_EXPIRES_IN: null, tokenVersion: { increment: 1 } }
+    });
+    const { generateAccessToken, generateRefreshToken } = tokenGeneratorUtils;
+    const payLoad = payloadGenerator({
+      username: user.username,
+      userID: user.userID,
+      isVerified: user.isEmailVerified,
+      tokenVersion: user.tokenVersion,
+      role: user.role
+    });
+    const accessToken = generateAccessToken(payLoad, res);
+    const refreshToken = generateRefreshToken(payLoad, res);
+    httpResponse(req, res, reshttp.okCode, reshttp.okMessage, { message: "Account Verified Successfully", accessToken, refreshToken });
   });
 }

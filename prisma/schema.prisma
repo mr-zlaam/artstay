@@ -35,6 +35,7 @@ model User {
   OTP             String?          @unique
   OTP_EXPIRES_IN  DateTime?
   isEmailVerified Boolean          @default(false)
+  tokenVersion    Int              @default(0)
   createdAt       DateTime         @default(now())
   trashedBy       String?
   trashedAt       DateTime?
