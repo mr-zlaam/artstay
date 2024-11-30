@@ -33,15 +33,18 @@ model User {
   role            MAIN_ROLE        @default(CUSTOMER)
   avatar          String?
   OTP             String?          @unique
-  artisan         Artisan?
-  travelAgent     TravelAgent?
-  eventOrganizer  EventOrganizers?
-  translator      Translators?
   OTP_EXPIRES_IN  DateTime?
   isEmailVerified Boolean          @default(false)
   createdAt       DateTime         @default(now())
   trashedBy       String?
   trashedAt       DateTime?
+  // foreign roles
+  artisan         Artisan?
+  travelAgent     TravelAgent?
+  eventOrganizer  EventOrganizers?
+  translator      Translators?
+  shopOwner       shopOwner?
+  photoGrapher    photoGrapher?
 
   @@index([userID])
   @@index([username])
@@ -63,10 +66,13 @@ model Artisan {
   hourlyRate    Float
   availability  Boolean  @default(true)
   userUserID    String
+  reviews       Json[]   @default([])
+  rating        Float    @default(0)
 
   @@index([phone])
   @@index([artisanID])
   @@index([region])
+  @@index([rating])
   @@index([expertise])
   @@index([availability])
   @@index([hourlyRate])
@@ -82,6 +88,8 @@ model TravelAgent {
   hourlyRate    Float
   region        String[]
   packages      Json[]
+  reviews       Json[]   @default([])
+  rating        Float    @default(0)
 }
 
 model EventOrganizers {
@@ -90,11 +98,12 @@ model EventOrganizers {
   organizationEmail   String   @unique
   organizationPhone   String   @unique
   organizationAddress String?
-  reviews             Json[]   @default([])
   specialization      String[]
   createdAt           DateTime @default(now())
   user                User     @relation(fields: [foreignUserID], references: [userID])
   foreignUserID       String   @unique
+  reviews             Json[]   @default([])
+  rating              Float    @default(0)
 
   @@index([organizationName])
   @@index([organizationEmail])
@@ -117,4 +126,48 @@ model Translators {
   @@index([availability])
   @@index([hourlyRate])
   @@map("translators")
+}
+
+model shopOwner {
+  user          User     @relation(fields: [foreignUserID], references: [userID])
+  foreignUserID String   @unique
+  shopOwnerID   Int      @id @default(autoincrement())
+  region        String[]
+  services      String[] @default([])
+  phone         String   @unique
+  expertise     String[] @default([])
+  hourlyRate    Float
+  availability  Boolean  @default(true)
+  userUserID    String
+  reviews       Json[]   @default([])
+  rating        Float    @default(0)
+
+  @@index([phone])
+  @@index([shopOwnerID])
+  @@index([region])
+  @@index([rating])
+  @@index([expertise])
+  @@index([availability])
+  @@index([hourlyRate])
+  @@map("shopOwners")
+}
+
+model photoGrapher {
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [foreignUserID], references: [userID])
+  foreignUserID String   @unique
+  services      String[] @default([])
+  phone         String   @unique
+  hourlyRate    Float
+  region        String[]
+  packages      Json[]
+  reviews       Json[]   @default([])
+  rating        Float    @default(0)
+
+  @@index([phone])
+  @@index([id])
+  @@index([region])
+  @@index([rating])
+  @@index([hourlyRate])
+  @@map("photoGraphers")
 }
