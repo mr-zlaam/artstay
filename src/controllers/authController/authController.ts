@@ -11,6 +11,7 @@ import { messageSender } from "../../utils/messageSenderUtils.js";
 import { filterAdmin } from "../../utils/FilterAdminUtils.js";
 import tokenGeneratorUtils from "../../utils/tokenGeneratorUtils.js";
 import { payloadGenerator } from "../../utils/payLoadGeneratorUtils.js";
+import logger from "../../utils/loggerUtils.js";
 export default class AuthController {
   // Register a new user and white list the verification part if user is  superadmin
   static register = asyncHandler(async (req, res) => {
@@ -50,11 +51,13 @@ export default class AuthController {
   });
   // ** Verify User Account through OTP
   static verifyAccount = asyncHandler(async (req, res) => {
-    const { OTP } = req.body as IVERIFY;
-    if (!OTP) throw { status: reshttp.badRequestCode, message: reshttp.badRequestMessage };
-    const user = await db.user.findUnique({ where: { OTP } });
+    const { OTP, email } = req.body as IVERIFY;
+    const user = await db.user.findUnique({ where: { email: email } });
     if (!user) throw { status: reshttp.notFoundCode, message: reshttp.notFoundMessage };
-    if (user.OTP === null) throw { status: reshttp.conflictCode, message: reshttp.conflictMessage };
+    if (user.OTP === null) {
+      logger.warn("Account is already verified");
+      throw { status: reshttp.conflictCode, message: reshttp.conflictMessage };
+    }
     const verifyCredentials = await verifyPassword(OTP, user.OTP, res);
     if (!verifyCredentials) throw { status: reshttp.unauthorizedCode, message: reshttp.unauthorizedMessage };
     await db.user.update({
@@ -65,12 +68,15 @@ export default class AuthController {
     const payLoad = payloadGenerator({
       username: user.username,
       userID: user.userID,
-      isVerified: user.isEmailVerified,
+      isVerified: true,
       tokenVersion: user.tokenVersion,
       role: user.role
     });
     const accessToken = generateAccessToken(payLoad, res);
     const refreshToken = generateRefreshToken(payLoad, res);
+    res
+      .cookie("refreshToken", refreshToken, constant.COOKIEOPTIONS.REFRESHTOKENCOOKIEOPTIONS)
+      .cookie("accessToken", accessToken, constant.COOKIEOPTIONS.ACESSTOKENCOOKIEOPTIONS);
     httpResponse(req, res, reshttp.okCode, reshttp.okMessage, { message: "Account Verified Successfully", accessToken, refreshToken });
   });
 }

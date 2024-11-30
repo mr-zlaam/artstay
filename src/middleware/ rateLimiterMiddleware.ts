@@ -5,6 +5,7 @@ import { httpResponse } from "../utils/apiResponseUtils.js";
 import { ENV } from "../configs/config.js";
 import getMinutes from "../utils/getMinutesUtils.js";
 import reshttp from "reshttp";
+import logger from "../utils/loggerUtils.js";
 
 type ErrorLimiter = {
   remainingPoints: number;
@@ -17,8 +18,8 @@ export class RateLimiterMiddleware {
 
   public async handle(req: Request, res: Response, next: NextFunction, consumptionPoints = 1, message?: string, totalPoints?: number, duration = 60) {
     try {
-      if (ENV === "development") return next(); // TODO: replace ! with = for production
-
+      if (ENV !== "development") return next(); // TODO: replace ! with = for production
+      logger.info("i am middleware");
       // **  Initialize or reinitialize rate limiter only if totalPoints or duration have changed
       if (!this.rateLimiter || this.currentTotalPoints !== totalPoints || this.currentDuration !== duration) {
         this.rateLimiter = new RateLimiterPrisma({
@@ -38,7 +39,13 @@ export class RateLimiterMiddleware {
       if (error?.remainingPoints === 0) {
         const remainingSeconds = Math.ceil(error.msBeforeNext / 1000); // Convert ms to seconds
         const remainingDuration = getMinutes(remainingSeconds);
-        httpResponse(req, res, reshttp.tooManyRequestsCode, message || `${reshttp.tooManyRequestsMessage} ${remainingDuration}`, null).end();
+        httpResponse(
+          req,
+          res,
+          reshttp.tooManyRequestsCode,
+          message || `${reshttp.tooManyRequestsMessage}. Please try again after ${remainingDuration}`,
+          null
+        ).end();
       } else {
         httpResponse(req, res, reshttp.internalServerErrorCode, `something went wrong in rateLimiter middleware: ${err as string}`, null);
       }

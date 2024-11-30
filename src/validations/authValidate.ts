@@ -31,3 +31,11 @@ export const userRegistrationSchema = z.object({
     .min(6, { message: "password must be at least 6 characters long." })
     .max(50, { message: "password can be at most 50 characters long." })
 });
+// **
+export const verifyAccountSchema = z.object({
+  OTP: z
+    .string({ message: "OTP is required!!" })
+    .min(8, { message: "OTP must be at least 8 characters long." })
+    .max(8, { message: "OTP can be at most 8 characters long." }),
+  email: z.string({ message: "email is required!!" }).min(3, { message: "email must be at least 3 characters long." })
+});
