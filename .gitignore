@@ -4,3 +4,4 @@ node_modules/
 node_modules/*
 pnpm-error.log
 dist/
+src/test.ts
