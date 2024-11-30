@@ -30,7 +30,7 @@ export default class AuthController {
         isEmailVerified: filterAdmin(body.email) ? true : false
       }
     });
-    if (!filterAdmin(body.email)) {
+    if (filterAdmin(body.email)) {
       await gloabalEmailMessage(
         constant.EMAILS.APP_EMAIL,
         body.email,
