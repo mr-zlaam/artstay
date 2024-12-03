@@ -19,9 +19,9 @@ export interface IREGISTER {
   password: string;
 }
 
-export interface IVERIFY {
-  email?: string;
-  OTP: string;
+export interface ILOGIN {
+  username: string;
+  password: string;
 }
 
 export interface IPAYLOAD {

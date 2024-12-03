@@ -1,9 +1,9 @@
 import { db } from "../../databases/database.js";
-import type { IREGISTER } from "../../types/types.js";
+import type { ILOGIN, IREGISTER } from "../../types/types.js";
 import reshttp from "reshttp";
 import { httpResponse } from "../../utils/apiResponseUtils.js";
 import { asyncHandler } from "../../utils/asyncHandlerUtils.js";
-import { passwordHasher } from "../../utils/passwordHasherUtils.js";
+import { passwordHasher, verifyPassword } from "../../utils/passwordHasherUtils.js";
 import constant from "../../constants/constant.js";
 import { gloabalEmailMessage } from "../../services/globalEmailMessageService.js";
 import { defineExpireyTime, generateRandomStrings } from "../../utils/slugStringGeneratorUtils.js";
@@ -88,5 +88,37 @@ export default class AuthController {
       .cookie("refreshToken", refreshToken, constant.COOKIEOPTIONS.REFRESHTOKENCOOKIEOPTIONS)
       .cookie("accessToken", accessToken, constant.COOKIEOPTIONS.ACESSTOKENCOOKIEOPTIONS);
     httpResponse(req, res, reshttp.okCode, reshttp.okMessage, { message: "Account Verified Successfully", accessToken, refreshToken });
+  });
+  // ** login user through password after the verification of his/her account
+  static login = asyncHandler(async (req, res) => {
+    const body = req.body as ILOGIN;
+    const user = await db.user.findUnique({ where: { username: body.username } });
+    if (!user) {
+      logger.info("No one is exist with this username in database");
+      throw { status: reshttp.notFoundCode, message: reshttp.notFoundMessage };
+    }
+    const isPasswordValid = await verifyPassword(body.password, user.password || "", res);
+    if (!isPasswordValid) {
+      logger.info("Password is incorrect");
+      throw { status: reshttp.unauthorizedCode, message: reshttp.unauthorizedMessage };
+    }
+    if (!user.isEmailVerified) {
+      logger.info("Credentials are correct but account is not verified");
+      throw { status: reshttp.unauthorizedCode, message: "Account is not verified" };
+    }
+    const { generateAccessToken, generateRefreshToken } = tokenGeneratorUtils;
+    const payLoad = payloadGenerator({
+      username: user.username,
+      userID: user.userID,
+      isVerified: true,
+      tokenVersion: user.tokenVersion,
+      role: user.role
+    });
+    const accessToken = generateAccessToken(payLoad, res);
+    const refreshToken = generateRefreshToken(payLoad, res);
+    res
+      .cookie("refreshToken", refreshToken, constant.COOKIEOPTIONS.REFRESHTOKENCOOKIEOPTIONS)
+      .cookie("accessToken", accessToken, constant.COOKIEOPTIONS.ACESSTOKENCOOKIEOPTIONS);
+    httpResponse(req, res, reshttp.okCode, reshttp.okMessage, { message: "login was successfull", accessToken, refreshToken });
   });
 }
