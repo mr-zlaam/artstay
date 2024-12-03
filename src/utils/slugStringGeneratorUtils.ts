@@ -1,11 +1,19 @@
 import crypto from "node:crypto";
-export function generateRandomStrings(length: number) {
+
+export function generateRandomStrings(length: number): string {
   const characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const charactersLength = characters.length;
+
+  const randomBytes = crypto.randomBytes(length);
+
   let randomString = "";
+
   for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
+    const randomByte = randomBytes[i] ?? 0;
+    const randomIndex = randomByte % charactersLength;
     randomString += characters.charAt(randomIndex);
   }
+
   return randomString;
 }
 
@@ -16,7 +24,7 @@ export function generateSlug(slugString: string) {
   return slug;
 }
 
-export function generateOtp(length = 6, expiryUnit: "s" | "m" | "h" | "d" = "m", expiryValue = 30): { otp: string; otpExpiry: Date } {
+export function generateOtp(length = 6, expiryValue = 30, expiryUnit: "s" | "m" | "h" | "d" = "m"): { otp: string; otpExpiry: Date } {
   let otp = Array.from({ length }, () => crypto.randomInt(0, 10)).join("");
   otp = otp.padStart(length, "0");
   let expiryMilliseconds = expiryValue * 60 * 1000;
@@ -27,4 +35,13 @@ export function generateOtp(length = 6, expiryUnit: "s" | "m" | "h" | "d" = "m",
   const otpExpiry = new Date(Date.now() + expiryMilliseconds);
 
   return { otp, otpExpiry };
+}
+
+export function defineExpireyTime(expiryValue = 30, expiryUnit: "s" | "m" | "h" | "d" = "m"): Date {
+  let expiryMilliseconds = expiryValue * 60 * 1000;
+  if (expiryUnit === "h") expiryMilliseconds = expiryValue * 60 * 60 * 1000;
+  if (expiryUnit === "s") expiryMilliseconds = expiryValue * 1000;
+  if (expiryUnit === "d") expiryMilliseconds = expiryValue * 24 * 60 * 60 * 1000;
+
+  return new Date(Date.now() + expiryMilliseconds);
 }
