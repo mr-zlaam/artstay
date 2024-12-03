@@ -1,7 +1,7 @@
 import { Router } from "express";
 import AuthController from "../../controllers/authController/authController.js";
 import { validate } from "../../middleware/validateMiddleware.js";
-import { userRegistrationSchema } from "../../validations/authValidate.js";
+import { logInUserSchema, userRegistrationSchema } from "../../validations/authValidate.js";
 import rateLimiterMiddleware from "../../middleware/ rateLimiterMiddleware.js";
 
 export const authRouter: Router = Router();
@@ -10,3 +10,11 @@ authRouter.route("/register").post(validate(userRegistrationSchema), AuthControl
 authRouter
   .route("/verifyAccount")
   .post((req, res, next) => rateLimiterMiddleware.handle(req, res, next, 2, undefined, undefined, 180), AuthController.verifyAccount);
+
+authRouter
+  .route("/login")
+  .post(
+    validate(logInUserSchema),
+    (req, res, next) => rateLimiterMiddleware.handle(req, res, next, 2, undefined, undefined, 960),
+    AuthController.login
+  );
