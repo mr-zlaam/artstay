@@ -33,7 +33,7 @@ const consoleTransport = new winston.transports.Console({
       const customLevel = colorizeLevel(
         level.includes("error") ? "ERROR" : level.includes("info") ? "INFO" : level.includes("warn") ? "WARN" : "DEBUG"
       );
-      const customTimeStamp = moment(timestamp as string).format("DD/MM/YYYY  HH:mm:ss A");
+      const customTimeStamp = moment(timestamp as string).format("DD/MM/YYYY  hh:mm:ss A");
       const customLog = `
 -------------------------------------------------------------------------------
   ${customLevel}::${message as string} 
